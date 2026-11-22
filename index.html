@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SteeringFrames</title>
+<meta name="description" content="A picture frame that steers a multimodal model: interpretability's steering directions delivered as a thin frame around any photo, or a short audio clip.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Marcellus&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/demo.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/story.css">
+</head>
+<body>
+<nav class="topnav">
+  <a class="brand" href="#top">SteeringFrames</a>
+  <span class="links">
+    <a class="lk" href="#demo">Demo</a><a class="lk" href="#comparison">Comparison</a><a class="lk" href="#behaviors">Behaviors</a><a class="lk" href="#method">Method</a>
+    <a class="lk" href="#defenses">Defenses</a><a class="lk" href="#finetune">Fine-tuning</a><a class="lk" href="#takeaways">Takeaways</a>
+    <a class="pill p" href="#bibtex">Paper</a>
+  </span>
+</nav>
+<div class="page" id="top">
+<header class="hero2">
+  <div class="word">SteeringFrames</div>
+  <h1 class="tl">Innocuous Changes that Steer Multimodal Language Models</h1>
+  <div class="authors">
+    <a href="#"><span class="ph0">SB</span><span><span class="nm">Sanzhar Bissenali</span><sup>*&dagger;</sup></span></a>
+    <a href="https://www.raphikang.com/"><img src="assets/author_rk.jpg" alt="Raphi Kang"><span><span class="nm">Raphi Kang</span><sup>*</sup></span></a>
+    <a href="https://georgiagkioxari.com/"><img src="assets/author_gg.jpg" alt="Georgia Gkioxari"><span class="nm">Georgia Gkioxari</span></a>
+  </div>
+  <div class="contrib">* equal contribution &nbsp;·&nbsp; &dagger; project lead</div>
+  <p class="subline" id="heroSub">We expose a new vulnerability of multimodal LLMs through mechanistic interpretability. We train universal, innocuous picture frames and audio clips that steer a model's internal representations toward fine-grained behaviors.</p>
+  <div class="btns"><a class="pill p off" href="#bibtex">Paper</a><a class="pill off" href="#bibtex">Supplement</a><a class="pill off" href="#bibtex">Code</a></div>
+</header>
+<section class="blk" id="demo">
+  <h2 class="demo-h">Steering LLMs through Images and Audio</h2>
+  <p class="demo-lede">An assistant meets an innocuous photo inside a trained picture frame, or hears a short audio clip, and is steered away from its helpful persona: it turns evil or sycophantic, starts sandbagging, or replies in Gen Z slang.</p>
+  <div class="b3 v4" id="VA1"><div class="tabs"></div><div class="segs"></div><div class="cap"></div><div class="subcap"></div><div class="stage"></div>
+    <div class="ctl"><button class="pp">Pause</button><button class="rp">Replay</button></div></div>
+</section>
+<section class="blk" id="comparison"><div class="sec-block"><div class="col">
+  <h3>Stronger and less perceptible than prior attacks</h3>
+  <p class="lede">Prior image attacks optimize an output-level objective: they push the model toward a target reply. SteeringFrames instead targets a representation-level objective inside the model. It reaches a higher average attack success rate than any prior attack, and the same recipe targets many other behaviors, not only jailbreaks.</p>
+  <div class="gal">
+    <figure><img src="assets/gal_photo_eiffel.png" alt="The user's photo of the Eiffel Tower"><figcaption><b>User's photo</b>&nbsp;</figcaption></figure>
+    <figure><img src="assets/gal_qi_eiffel.png" alt="Qi et al.: the photo with noise on every pixel"><figcaption><b>Qi et al.</b>changes every pixel</figcaption><div class="meta">area 100% · NIQE* 10.5</div></figure>
+    <figure><img src="assets/gal_imgjp.png" alt="imgJP: an adversarial noise image"><figcaption><b>imgJP</b>replaces the photo</figcaption><div class="meta">area 100% · NIQE* 18.3</div></figure>
+    <figure><img src="assets/gal_figstep.png" alt="FigStep: a page of typed text"><figcaption><b>FigStep</b>replaces the photo</figcaption><div class="meta">area 100% · NIQE* 18.5</div></figure>
+    <figure><img src="assets/gal_ultrabreak.png" alt="UltraBreak: a colourful adversarial texture"><figcaption><b>UltraBreak</b>replaces the photo</figcaption><div class="meta">area 100% · NIQE* 7.4</div></figure>
+    <figure class="ours"><img src="assets/gal_ours_eiffel.png" alt="SteeringFrames: the same photo inside a thin frame"><figcaption><b>SteeringFrames</b>adds a frame</figcaption><div class="meta">area 23% · NIQE* 3.3</div></figure>
+  </div>
+  <div class="ctrls">
+    <span><span class="ctrl-l">Benchmark</span><span class="seg2" id="c1metric"><button data-v="sr" class="on">StrongREJECT</button><button data-v="jbb">JailbreakBench ASR</button></span></span>
+    <span><span class="ctrl-l">Model</span><span class="seg2" id="c1model"><button data-v="3" class="on">Average of 3</button><button data-v="0">Qwen2.5-VL-7B</button><button data-v="1">Gemma-3-12B</button><button data-v="2">Ministral-3-14B</button></span></span>
+  </div>
+  <div class="legend"><span><i style="background:var(--comp)"></i>SteeringFrames</span><span><i style="background:#b9b6b0"></i>Prior attacks</span><span><i style="background:#EF9A3A"></i>Baseline (no attack)</span></div>
+  <div class="chart" id="c1chart"></div>
+  <div class="note" id="c1note"></div>
+  <div class="note">*NIQE: naturalness, lower is better.</div>
+</div></div></section>
+<section class="blk" id="behaviors"><div class="sec-block"><div class="col">
+  <h3>Beyond jailbreaks: evil and sycophancy</h3>
+  <p class="lede">Swap the steering direction and the same recipe targets other safety-relevant behaviors. Evil frames and clips make the replies misaligned; sycophantic ones make the model praise the user without reason. Both work across many model families.</p>
+  <div class="ctrls"><span><span class="ctrl-l">Behavior</span><span class="seg2"><button data-v="evil" class="on"><img src="assets/robot_angry.svg" alt="">Evil</button><button data-v="syc"><img src="assets/robot_heart.svg" alt="">Sycophancy</button></span></span></div>
+  <div class="p4top">
+    <div><div class="big">&nbsp;</div><div class="what"></div></div>
+    <div class="side"><button class="replay">↻ Replay</button>
+      <div class="lg"><span><i style="background:#EF9A3A"></i>Baseline</span><span><i class="steer"></i>SteeringFrames (frame or clip)</span></div></div>
+  </div>
+  <div class="pc"></div>
+  <div class="note"></div>
+</div></div></section>
+<section class="blk" id="method"><div class="sec-block"><div class="col">
+  <h3>How it works</h3>
+  <p class="lede">Interpretability tells us which internal state carries a behavior. We train a frame (or an audio clip) to put the model in that state.</p>
+  <div class="mfig" data-fig="grid">
+    <div class="chips"><button data-s="a">1 Direction</button><button data-s="b">2 Targets</button><button data-s="c">3 Training</button><span class="sep"></span><button data-m="frame" class="on">Frame</button><button data-m="clip">Clip</button><span class="sep"></span><button class="rp">↻ Replay</button></div>
+    <svg class="fig" role="img" aria-label="Animated method: find the steering direction, record the steered hidden states as targets, train the frame to reproduce them"></svg>
+    <div class="fcap"></div>
+  </div>
+</div></div></section>
+<section class="blk" id="defenses"><div class="sec-block"><div class="col">
+  <h3>Defending against SteeringFrames costs performance</h3>
+  <p class="lede">We can train picture frames and audio clips to be robust to naive defenses such as JPEG compression, blur and noise (for audio: MP3 compression, noise and low-pass filtering). We do it by sampling a random transformation at every training step. Removing the steering hurts the model on clean inputs. Try playing below: you are the defender.</p>
+  <div class="toprow"><span class="seg2 mode"><button data-v="frame" class="on">Frame</button><button data-v="clip">Clip</button></span><span class="seg2 kind"></span></div>
+  <div class="d1">
+    <div class="pic">
+      <div class="picimg"><img alt="The framed photo after the chosen defense"></div>
+      <div class="player" hidden>
+        <button class="play main" aria-label="Play the clip with the trained change and the defense applied"><span class="ic"></span>Play the trained clip</button>
+        <canvas width="600" height="150" aria-hidden="true"></canvas>
+        <div class="pstat"></div>
+        <button class="play ref" aria-label="Play the raindrop sound it starts from"><span class="ic"></span>The raindrop sound it starts from</button>
+      </div>
+      <div class="pcap"></div>
+    </div>
+    <div>
+      <input type="range" min="0" max="6" step="1" value="0" aria-label="Defense strength"><div class="ticks"></div>
+      <div class="m"><div class="h"><span>Attack: StrongREJECT score</span><b class="v1"></b></div><div class="bar b1"><i></i><s></s></div></div>
+      <div class="m"><div class="h"><span class="l2"></span><b class="v2"></b></div><div class="bar b2"><i></i><s></s></div></div>
+      <div class="verdict"></div>
+    </div>
+  </div>
+  <div class="fine"></div>
+</div></div></section>
+<section class="blk" id="finetune"><div class="sec-block"><div class="col">
+  <h3>Trained on the base model, works on its fine-tunes</h3>
+  <p class="lede">A sandbagging frame makes a model answer as usual, but wrong. We train it on Qwen2.5-VL-7B only and apply it to two models fine-tuned from it.</p>
+  <div class="ftA">
+    <div class="tree"><div class="node base">Qwen2.5-VL-7B<br><span style="font-size:11.5px;opacity:.8">frame trained here</span></div><div class="arr">fine-tuned by others ↓</div>
+      <div class="kids"><div class="node">JanusCoderV-7B<br><span style="font-size:11.5px;color:var(--muted)">code</span></div><div class="node">VL-Rethinker-7B<br><span style="font-size:11.5px;color:var(--muted)">math</span></div></div></div>
+    <div><div class="legend"><span><i style="background:#EF9A3A;border-radius:50%"></i>Untrained frame</span><span><i style="background:#6B3410;border-radius:50%"></i>Sandbagging frame</span></div><div class="chart" id="c5chart"></div></div>
+  </div>
+</div></div></section>
+<section class="blk" id="takeaways"><div class="sec-block"><div class="col">
+  <h3>Takeaways</h3>
+  <ol class="tk">
+    <li><b>Attacks can exploit the model's internal structure.</b> Steering directions found with mechanistic interpretability tools can serve as training targets that are delivered through multimodal inputs: picture frames and audio clips. This works across 9 vision and 3 audio language models. Because the attack works through the model's internal states, defending against it needs interpretability too: anyone deploying open-weight multimodal models should watch what an input does inside the model, not only what it looks like.</li>
+    <li><b>Interpretability-informed attacks outperform prior attacks.</b> By targeting the model's internal representations instead of its replies, SteeringFrames reaches a higher average attack success rate than four prior image attacks while changing only a quarter of the image. Once trained, it needs no access to the model at inference, and trained under random blur, JPEG, noise or MP3 compression, it survives these defenses unless the defender gives up accuracy on clean inputs.</li>
+    <li><b>They can degrade downstream performance.</b> Beyond jailbreaks, a refusal frame or clip removes 95% of the model's accuracy on multimodal tasks, and a sandbagging frame trained on a base model quietly makes its fine-tuned versions answer wrong. SteeringFrames lays the groundwork for mechanistically informed attacks, and for the defenses they call for.</li>
+  </ol>
+  <p class="release">We release our code, but not the trained harmful-behavior frames; we share those with defense researchers on request.</p>
+</div></div></section>
+<section class="blk" id="bibtex"><div class="sec-block"><div class="col">
+  <h3>BibTeX</h3>
+<div class="bib">@inproceedings{steeringframes2027,
+  title     = {SteeringFrames: Innocuous Changes that Steer Multimodal Language Models},
+  author    = {Anonymous},
+  booktitle = {Under review},
+  year      = {2027}
+}</div>
+  <p class="credits">Photos: Eiffel Tower by <a href="https://commons.wikimedia.org/wiki/File:Eiffel_Tower_(2962488972).jpg">xlibber</a>, <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>, via Wikimedia Commons; the other photos are public domain or CC0 (Wikimedia Commons).</p>
+</div></div></section>
+</div>
+<div id="tip"></div>
+<script src="js/demo.js"></script>
+<script src="js/story.js"></script>
+<script src="js/sections.js"></script>
+<script src="js/behaviors.js"></script>
+<script src="js/method.js"></script>
+<script src="js/defenses.js"></script>
+</body>
+</html>

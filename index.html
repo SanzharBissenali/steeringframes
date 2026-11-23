@@ -62,7 +62,7 @@
   <div class="note">*NIQE: naturalness, lower is better.</div>
 </div></div></section>
 <section class="blk" id="behaviors"><div class="sec-block"><div class="col">
-  <h3>Beyond jailbreaks: evil and sycophancy</h3>
+  <h3>Behavioral Steering beyond Jailbreaks</h3>
   <p class="lede">Swap the steering direction and the same recipe targets other safety-relevant behaviors. Evil frames and clips make the replies misaligned; sycophantic ones make the model praise the user without reason. Both work across many model families.</p>
   <div class="ctrls"><span><span class="ctrl-l">Behavior</span><span class="seg2"><button data-v="evil" class="on"><img src="assets/robot_angry.svg" alt="">Evil</button><button data-v="syc"><img src="assets/robot_heart.svg" alt="">Sycophancy</button></span></span></div>
   <div class="p4top">
@@ -107,8 +107,8 @@
   <div class="fine"></div>
 </div></div></section>
 <section class="blk" id="finetune"><div class="sec-block"><div class="col">
-  <h3>Trained on the base model, works on its fine-tunes</h3>
-  <p class="lede">A sandbagging frame makes a model answer as usual, but wrong. We train it on Qwen2.5-VL-7B only and apply it to two models fine-tuned from it.</p>
+  <h3>SteeringFrames transfers to fine-tuned checkpoints</h3>
+  <p class="lede">A sandbagging frame makes a model answer as usual, but wrong. We train it on Qwen2.5-VL-7B only and apply it to two checkpoints fine-tuned from it.</p>
   <div class="ftA">
     <div class="tree"><div class="node base">Qwen2.5-VL-7B<br><span style="font-size:11.5px;opacity:.8">frame trained here</span></div><div class="arr">fine-tuned by others ↓</div>
       <div class="kids"><div class="node">JanusCoderV-7B<br><span style="font-size:11.5px;color:var(--muted)">code</span></div><div class="node">VL-Rethinker-7B<br><span style="font-size:11.5px;color:var(--muted)">math</span></div></div></div>
@@ -120,7 +120,7 @@
   <ol class="tk">
     <li><b>Attacks can exploit the model's internal structure.</b> Steering directions found with mechanistic interpretability tools can serve as training targets that are delivered through multimodal inputs: picture frames and audio clips. This works across 9 vision and 3 audio language models. Because the attack works through the model's internal states, defending against it needs interpretability too: anyone deploying open-weight multimodal models should watch what an input does inside the model, not only what it looks like.</li>
     <li><b>Interpretability-informed attacks outperform prior attacks.</b> By targeting the model's internal representations instead of its replies, SteeringFrames reaches a higher average attack success rate than four prior image attacks while changing only a quarter of the image. Once trained, it needs no access to the model at inference, and trained under random blur, JPEG, noise or MP3 compression, it survives these defenses unless the defender gives up accuracy on clean inputs.</li>
-    <li><b>They can degrade downstream performance.</b> Beyond jailbreaks, a refusal frame or clip removes 95% of the model's accuracy on multimodal tasks, and a sandbagging frame trained on a base model quietly makes its fine-tuned versions answer wrong. SteeringFrames lays the groundwork for mechanistically informed attacks, and for the defenses they call for.</li>
+    <li><b>They can degrade downstream performance.</b> Beyond jailbreaks, a refusal frame or clip removes 95% of the model's accuracy on multimodal tasks, and a sandbagging frame trained on a base model quietly makes its fine-tuned checkpoints answer wrong. SteeringFrames lays the groundwork for mechanistically informed attacks, and for the defenses they call for.</li>
   </ol>
   <p class="release">We release our code, but not the trained harmful-behavior frames; we share those with defense researchers on request.</p>
 </div></div></section>

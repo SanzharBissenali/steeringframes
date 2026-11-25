@@ -65,9 +65,14 @@ async function firstThree(root, s, t, bar){
     await W(500, t);
     for (let j = 0; j <= hit; j++){ cards.forEach(c => c.classList.remove("sel")); cards[j].classList.add("sel"); await W(700, t); }
     cards.forEach((c, j) => c.classList.toggle("dim", j !== hit)); cards[hit].classList.add("pick");
-    const bars = [...cards[hit].querySelectorAll(".aw i")]; for (const b of bars){ b.classList.add("played"); await W(40, t); }
     cards[hit].insertAdjacentHTML("beforeend", `<div class="cliplab">▲ first 2 s: a trained clip</div>`);
-    await W(1500, t);
+    acol.querySelector(".res").insertAdjacentHTML("afterend", `<button class="clipplay fade-in" type="button">🔊 Play the 2-second clip</button>`);
+    acol.querySelector(".clipplay").onclick = () => clipPlay();
+    clipPlay();
+    const bars = [...cards[hit].querySelectorAll(".aw i")];
+    try { for (const b of bars){ b.classList.add("played"); await W(2000 / bars.length / PACE, t); } }
+    catch (e){ clipStop(); throw e; }
+    await W(800, t);
   } else if (s.mode === "listen"){
     acol.insertAdjacentHTML("beforeend", `<div class="wavebox fade-in"><div class="wave">${waveHTML(64)}</div><div class="wl">▲ a trained two-second clip, then the user's speech</div></div>`); down();
     const b = [...acol.querySelectorAll(".wavebox i")]; for (const x of b){ x.classList.add("played"); await W(45, t); }
@@ -88,6 +93,15 @@ async function firstThree(root, s, t, bar){
   await W(2400, t); bar.done(2);
   return {th, acol, down};
 }
+
+let clipAudio = null;
+function clipPlay(){
+  try {
+    if (!clipAudio) clipAudio = new Audio(window.CLIPS ? "data:audio/wav;base64," + window.CLIPS["clip.wav"] : A + "clip.wav");
+    clipAudio.currentTime = 0; const p = clipAudio.play(); if (p && p.catch) p.catch(() => {});
+  } catch (e) {}
+}
+function clipStop(){ try { if (clipAudio) clipAudio.pause(); } catch (e) {} }
 
 async function fold(acol, t){
   acol.querySelectorAll(".think, .tool").forEach(e => e.classList.add("collapse"));

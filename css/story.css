@@ -152,3 +152,5 @@
 .v4 .thread .res.ares.folded .card.pick{width:200px}
 .v4 .thread .res.ares.folded .card .cliplab{display:none}
 .v4 .thread .res.ares .card.pick{transform:none}
+.v4 .clipplay{align-self:flex-start;margin-top:8px;font:600 12px Inter,sans-serif;color:var(--pc);background:#fff;border:1px solid color-mix(in srgb,var(--pc) 45%,#fff);border-radius:999px;padding:4px 12px;cursor:pointer}
+.v4 .clipplay:hover{background:color-mix(in srgb,var(--pc) 8%,#fff)}

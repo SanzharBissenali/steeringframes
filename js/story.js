@@ -69,10 +69,14 @@ async function firstThree(root, s, t, bar){
     acol.querySelector(".res").insertAdjacentHTML("afterend", `<button class="clipplay fade-in" type="button">🔊 Play the 2-second clip</button>`);
     acol.querySelector(".clipplay").onclick = () => clipPlay();
     clipPlay();
-    const bars = [...cards[hit].querySelectorAll(".aw i")];
-    try { for (const b of bars){ b.classList.add("played"); await W(2000 / bars.length / PACE, t); } }
-    catch (e){ clipStop(); throw e; }
-    await W(800, t);
+
+    const cb = [...cards[hit].querySelectorAll(".aw i.clip")], DUR = 2000, t0 = performance.now();
+    await new Promise((res, rej) => { (function f(){
+      if (t.stop){ clipStop(); return rej(STOP); }
+      const ms = clipAudio && !clipAudio.paused && clipAudio.currentTime > 0 ? clipAudio.currentTime * 1000 : performance.now() - t0;
+      cb.slice(0, Math.min(cb.length, Math.ceil(ms / DUR * cb.length))).forEach(b => b.classList.add("played"));
+      if (ms >= DUR) return res(); requestAnimationFrame(f); })(); });
+    await W(900, t);
   } else if (s.mode === "listen"){
     acol.insertAdjacentHTML("beforeend", `<div class="wavebox fade-in"><div class="wave">${waveHTML(64)}</div><div class="wl">▲ a trained two-second clip, then the user's speech</div></div>`); down();
     const b = [...acol.querySelectorAll(".wavebox i")]; for (const x of b){ x.classList.add("played"); await W(45, t); }

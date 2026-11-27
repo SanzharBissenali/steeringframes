@@ -68,10 +68,11 @@ async function firstThree(root, s, t, bar){
     cards[hit].insertAdjacentHTML("beforeend", `<div class="cliplab">▲ first 2 s: a trained clip</div>`);
     acol.querySelector(".res").insertAdjacentHTML("afterend", `<button class="clipplay fade-in" type="button">🔊 Play the 2-second clip</button>`);
     acol.querySelector(".clipplay").onclick = () => clipPlay();
-    clipPlay();
+    if (!t.ff) clipPlay();
 
     const cb = [...cards[hit].querySelectorAll(".aw i.clip")], DUR = 2000, t0 = performance.now();
-    await new Promise((res, rej) => { (function f(){
+    if (t.ff) cb.forEach(b => b.classList.add("played"));
+    else await new Promise((res, rej) => { (function f(){
       if (t.stop){ clipStop(); return rej(STOP); }
       const ms = clipAudio && !clipAudio.paused && clipAudio.currentTime > 0 ? clipAudio.currentTime * 1000 : performance.now() - t0;
       cb.slice(0, Math.min(cb.length, Math.ceil(ms / DUR * cb.length))).forEach(b => b.classList.add("played"));
@@ -98,14 +99,19 @@ async function firstThree(root, s, t, bar){
   return {th, acol, down};
 }
 
-let clipAudio = null;
+let clipAudio = null, clipWanted = false;
+const clipEl = () => { if (!clipAudio){ clipAudio = new Audio(window.CLIPS ? "data:audio/wav;base64," + window.CLIPS["clip.wav"] : A + "clip.wav");
+  clipAudio.addEventListener("ended", () => { clipWanted = false; }); } return clipAudio; };
 function clipPlay(){
-  try {
-    if (!clipAudio) clipAudio = new Audio(window.CLIPS ? "data:audio/wav;base64," + window.CLIPS["clip.wav"] : A + "clip.wav");
-    clipAudio.currentTime = 0; const p = clipAudio.play(); if (p && p.catch) p.catch(() => {});
-  } catch (e) {}
+  try { clipWanted = true; const a = clipEl(); a.muted = false; a.currentTime = 0; const p = a.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
 }
-function clipStop(){ try { if (clipAudio) clipAudio.pause(); } catch (e) {} }
+
+function clipUnlock(){
+  try { if (clipWanted && clipAudio && !clipAudio.paused) return; const a = clipEl(); a.muted = true;
+    const p = a.play(); if (p && p.then) p.then(() => { if (!clipWanted){ a.pause(); a.currentTime = 0; } a.muted = false; }, () => { a.muted = false; }); } catch (e) {}
+}
+["pointerdown", "keydown"].forEach(ev => document.addEventListener(ev, clipUnlock, {once: true, capture: true}));
+function clipStop(){ clipWanted = false; try { if (clipAudio) clipAudio.pause(); } catch (e) {} }
 
 async function fold(acol, t){
   acol.querySelectorAll(".think, .tool").forEach(e => e.classList.add("collapse"));
